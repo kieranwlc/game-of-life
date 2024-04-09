@@ -1,7 +1,7 @@
 import pygame
 from pygame import Rect
 
-from gameobjects.grid import Grid
+from grid.grid import Grid
 
 grid_rect: Rect = Rect(0, 0, 1600, 900)
 grid: Grid = Grid((20, 20), grid_rect)
