@@ -10,9 +10,9 @@ class ClickableRect(ABC):
 
     def handle_click(self, event: Event):
         if self.clickable.collidepoint(event.pos):
-            self.on_click(event)
+            self._on_click(event)
 
     @abstractmethod
-    def on_click(self, event: Event):
+    def _on_click(self, event: Event):
         pass
 

@@ -8,6 +8,12 @@ from pygame.rect import Rect
 from core.clickable_rect import ClickableRect
 
 class Cell(ClickableRect):
+    def __init__(self, rect: Rect):
+        self._neighbours: list[Cell] = []
+        self._status: self.Status = self.Status.DEAD
+        self._next_status: self.Status = self.Status.UNKNOWN
+        self._rect: Rect = rect
+
     class Status(Enum):
         DEAD = 0
         ALIVE = 1
@@ -23,7 +29,7 @@ class Cell(ClickableRect):
 
     @property
     def next_status(self):
-        return self._alive
+        return self._next_status
 
     @property
     def neighbours(self):
@@ -41,23 +47,19 @@ class Cell(ClickableRect):
     def clickable(self) -> Rect:
         return self._rect
 
-    def __init__(self, rect: Rect):
-        self._neighbours: list[Cell] = []
-        self._status: self.Status = self.Status.DEAD
-        self._next_status: self.Status = self.Status.UNKNOWN
-        self._rect: Rect = rect
-
     def calc_next_status(self):
         aliveNeighbours: int = 0
         for adjacentCell in self._neighbours:
-            if adjacentCell.alive:
+            if adjacentCell.status == self.Status.ALIVE:
                 aliveNeighbours += 1
 
-        if (self._alive):
+        self._next_status = self._status
+
+        if (self._status == self.Status.ALIVE):
             if (aliveNeighbours < 2) or (aliveNeighbours > 3):
                 self._next_status = self.Status.DEAD
-        else:
-            if aliveNeighbours > 3:
+        elif (self._status == self.Status.DEAD):
+            if aliveNeighbours == 3:
                 self._next_status = self.Status.ALIVE
 
     def update_status(self):
@@ -65,7 +67,7 @@ class Cell(ClickableRect):
         self._next_status = self.Status.UNKNOWN
 
     def set_neighbours(self, val: list[Cell]):
-        self._neighbours = val.copy()
+        self._neighbours = val.copy().copy()
 
     def draw(self, surface: Surface):
         border_color = Color('#404040')
@@ -82,7 +84,7 @@ class Cell(ClickableRect):
         draw.rect(surface, border_color, self._rect)
         draw.rect(surface, color, innerRect)
 
-    def on_click(self, event: Event):
+    def _on_click(self, event: Event):
         if (self._status == self.Status.ALIVE):
             self._status = self.Status.DEAD
         elif (self._status == self.Status.DEAD):

@@ -32,6 +32,27 @@ class Grid(ClickableRect):
         self._rect: Rect = rect
         self._init_cells(0, 0)
 
+    def _coords_in_bounds(self, x: int, y: int):
+        if (x < 0):
+            return False
+        if (y < 0):
+            return False
+        if (x >= (self._dimensions[0])):
+            return False
+        if (y >= self._dimensions[1]):
+            return False
+        return True
+
+    def _add_neighbours(self, x: int, y: int):
+        neighbours: list[Cell] = []
+        for ny in range(y - 1, y + 2):
+            for nx in range(x - 1, x + 2):
+                if not (ny == y and nx == x):
+                    if self._coords_in_bounds(nx, ny):
+                        neighbours.append(self._cells[ny][nx])
+
+        self._cells[y][x].set_neighbours(neighbours)
+
     def _init_cells(self, x: int, y: int):
         for y in range(self._dimensions[1]):
             self._cells.append([])
@@ -39,19 +60,9 @@ class Grid(ClickableRect):
                 cell_rect = self._get_cell_rect(x, y)
                 self._cells[y].append(Cell(cell_rect))
         
-        for y in range(self._dimensions[1]):
-            for x in range(self._dimensions[0]):
-                neighbours: list[Cell] = []
-                if (x - 1 >= 0):
-                    neighbours.append(self._cells[y][x - 1])
-                if (y - 1 >= 0):
-                    neighbours.append(self._cells[y - 1][x])
-                if (x + 1 < (self._dimensions[0] - 1)):
-                    neighbours.append(self._cells[y][x + 1])
-                if (y + 1 < self._dimensions[1] - 1):
-                    neighbours.append(self._cells[y + 1][x])
-
-                self._cells[y][x].set_neighbours(neighbours)
+        for y in range(len(self._cells)):
+            for x in range(len(self._cells[0])):
+                self._add_neighbours(x, y)
 
     def update(self):
         for row in self._cells:
@@ -62,12 +73,12 @@ class Grid(ClickableRect):
                 cell.update_status()
 
     def draw(self, surface: Surface):
-        for y in range(self._dimensions[1]):
-            for x in range(self._dimensions[0]):
+        for y in range(len(self._cells)):
+            for x in range(len(self._cells[0])):
                 self._cells[y][x].rect = self._get_cell_rect(x, y)
                 self._cells[y][x].draw(surface)
 
-    def on_click(self, event: Event):
+    def _on_click(self, event: Event):
         for row in self._cells:
             for cell in row:
                 if cell.rect.collidepoint(event.pos):
