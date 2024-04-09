@@ -1,0 +1,55 @@
+COMP5400 Plan:
+
+Topic: Game of Life
+
+-----------------------------------------------------
+
+Relevant Prompts: 
+Implement the Game of Life in BEAST, Unity or other platform
+Implement or experiment with an existing implementation of Conway’s Game of Life (if
+using an existing framework). 
+
+OR 
+
+Write a critical exploration of conway's Game of Life
+
+-----------------------------------------------------
+
+Ideas:
+ - Begin by implementing the vanilla game using framework of choice
+ - Introduce different types of cells that interact with other cells via different rules
+ - Make cells who's outcomes depend on more complex criteria than simple rules
+    - Cells with sensing capabilities?
+    - Cell outcomes could be probabalistic instead of certain - then probability can be configured/influenced.
+ - Make other objects that can influence the outcome of cells.
+ - Refer to course material for swarm/bio concepts and try to adjust the behaviour of cells
+   to model these concepts
+ - Create a sandbox allowing the user to experiment with different rules, parameters and place
+   objects in the world before running the game
+   - Menus, drag and drop
+ - Create presets that demonstrate bio concepts - can have accompanying documentation to 
+   demonstrate understanding
+
+---------------------------------------------------------
+
+Frameworks:
+- Unity
+- Godot
+- Pygame *
+- Phaser (browser)
+
+------------------------------------------------------
+
+Mini-Report: Some references on game of life, critical -> intro presentation
+
+------------------------------------------------------
+
+Presentation
+
+Timeline:
+11th/12  - Good baseline vanilla game
+22nd April - Implementation mostly complete
+    - Set out initial project structure
+    - Grid size scalable, rules, cell -> rules,
+1st May - fully focussed on report/presentation
+
