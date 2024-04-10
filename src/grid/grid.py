@@ -2,13 +2,14 @@ import numpy as np
 
 from pygame import Rect
 from pygame.surface import Surface
-from pygame.event import Event
+from pygame.event import Event, custom_type
 
-from core.clickable_rect import ClickableRect
 from grid.cell import Cell
 from grid.cells.vanilla_cell import VanillaCell
 
-class Grid(ClickableRect):
+EVENT_GAME_TICK = custom_type()
+
+class Grid():
     def __init__(self, 
                  shape: tuple[int, int], 
                  rect: Rect):
@@ -47,12 +48,21 @@ class Grid(ClickableRect):
     def clickable(self) -> Rect:
         return self._rect
 
+    def process_event(self, event: Event):
+        '''
+        Handle pygame events
+        '''
+        for cell in self._cells.flatten():
+            cell.process_event(event)
+        if event.type == EVENT_GAME_TICK:
+            self.update()
+
     def update(self):
         '''
         Does one update of every cell's status in parallel
         '''
         for cell in self._cells.flatten():
-            cell.calc_next_status()
+            cell.calc_next()
         for cell in self._cells.flatten():
             cell.update()
 
@@ -71,10 +81,11 @@ class Grid(ClickableRect):
                 rect = self._get_cell_rect(x, y)
                 self._cells[y][x] = VanillaCell(rect, self._cells, (x, y))
 
-    def _on_click(self, event: Event):
-        for cell in self._cells.flatten():
-            if cell.rect.collidepoint(event.pos):
-                cell.handle_click(event)
+    def _handle_click(self, event: Event):
+        if self.clickable.collidepoint(event.pos):
+            for cell in self._cells.flatten():
+                if cell.rect.collidepoint(event.pos):
+                    cell.handle_click(event)
 
     def _get_cell_rect(self, x, y) -> Rect:
         cell_w = self._rect.w / self._shape[0] 

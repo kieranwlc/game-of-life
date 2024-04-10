@@ -1,69 +1,58 @@
 import pygame
 from pygame import Rect, time
-from pygame.surface import Surface
 
-from grid.grid import Grid
-from ui.button import Button
+import pygame_gui
+from pygame_gui.elements import UIButton
+
+from grid.grid import Grid, EVENT_GAME_TICK
+from settings import settings
 
 # Markup display into Rects
-DISPLAY_WIDTH = 1600
-DISPLAY_HEIGHT = 900
+display_width = settings.settings_read("display_width")
+display_height = settings.settings_read("display_height")
 
-GRID_X = 0
-GRID_Y = 0
-GRID_W = 0.9 * DISPLAY_HEIGHT
-GRID_H = 0.9 * DISPLAY_HEIGHT
+pygame.init()
+pygame.display.set_caption("Game of Life")
 
-PLAY_X = 0
-PLAY_Y = GRID_H
-PLAY_W = 100
-PLAY_H = 0.1 * DISPLAY_HEIGHT
+screen = pygame.display.set_mode((display_width, display_height))
+gui_manager = pygame_gui.UIManager((display_width, display_height))
 
-grid: Grid = Grid((50, 50), Rect(GRID_X, GRID_Y, GRID_W, GRID_H))
-
-def toggle_play(sender: object):
+grid: Grid = Grid((50, 50), Rect(0, 0, display_height, display_height))
+    
+playing = False
+play_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 0), (100, 50)),
+                                           text='Play',
+                                           manager=gui_manager)
+def toggle_play():
     global playing
     if not playing:
+        play_button.text = 'Pause'
+        play_button.rebuild()
         time.set_timer(EVENT_GAME_TICK, millis=100, loops=0)
         playing = True
-        play_button.label = "Pause"
     else:
+        play_button.text = 'Play'
+        play_button.rebuild()
         time.set_timer(EVENT_GAME_TICK, millis=0)
-        playing = False
-        play_button.label = "Play"
+        playing = False 
 
-play_button: Button = Button(Rect(PLAY_X, PLAY_Y, PLAY_W, PLAY_H), "Play", toggle_play)
+clock = pygame.time.Clock()
+running = True
 
-def render(screen: Surface):
+while running:
+    time_delta = clock.tick(60)/1000.0
+    for event in pygame.event.get():
+        gui_manager.process_events(event)
+        grid.process_event(event)
+
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            if event.ui_element == play_button:
+                toggle_play()
+
     grid.draw(screen)
-    play_button.draw(screen)
-    pygame.display.flip()
+    gui_manager.update(time_delta)
+    gui_manager.draw_ui(screen)
+    pygame.display.update()
 
-EVENT_UPDATE_DISPLAY = pygame.USEREVENT
-EVENT_GAME_TICK = pygame.USEREVENT + 1
-
-def main():
-    pygame.init()
-    pygame.display.set_caption("Game of Life")
-    screen = pygame.display.set_mode((DISPLAY_WIDTH,DISPLAY_HEIGHT))
-
-    time.set_timer(EVENT_UPDATE_DISPLAY, millis=33)
-
-    global playing
-    playing = False
-     
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                grid.handle_click(event)
-                play_button.handle_click(event)
-            if event.type == (EVENT_UPDATE_DISPLAY):
-                render(screen)
-            if event.type == (EVENT_GAME_TICK):
-                grid.update()
-     
-if __name__=="__main__":
-    main()
