@@ -19,18 +19,17 @@ PLAY_Y = GRID_H
 PLAY_W = 100
 PLAY_H = 0.1 * DISPLAY_HEIGHT
 
-grid: Grid = Grid((10, 10), Rect(GRID_X, GRID_Y, GRID_W, GRID_H))
+grid: Grid = Grid((50, 50), Rect(GRID_X, GRID_Y, GRID_W, GRID_H))
 
 def toggle_play(sender: object):
-    toggle_play.playing = False
-
-    if not toggle_play.playing:
+    global playing
+    if not playing:
         time.set_timer(EVENT_GAME_TICK, millis=100, loops=0)
-        toggle_play.playing = True
+        playing = True
         play_button.label = "Pause"
     else:
         time.set_timer(EVENT_GAME_TICK, millis=0)
-        toggle_play.playing = False
+        playing = False
         play_button.label = "Play"
 
 play_button: Button = Button(Rect(PLAY_X, PLAY_Y, PLAY_W, PLAY_H), "Play", toggle_play)
@@ -46,9 +45,12 @@ EVENT_GAME_TICK = pygame.USEREVENT + 1
 def main():
     pygame.init()
     pygame.display.set_caption("Game of Life")
-    screen = pygame.display.set_mode((1600,900))
+    screen = pygame.display.set_mode((DISPLAY_WIDTH,DISPLAY_HEIGHT))
 
     time.set_timer(EVENT_UPDATE_DISPLAY, millis=33)
+
+    global playing
+    playing = False
      
     running = True
     while running:
