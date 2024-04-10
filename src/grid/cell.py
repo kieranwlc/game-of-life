@@ -1,5 +1,8 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 from enum import Enum
+
+from numpy import ndarray
 
 from pygame import Color, Surface, draw
 from pygame.event import Event
@@ -7,17 +10,23 @@ from pygame.rect import Rect
 
 from core.clickable_rect import ClickableRect
 
-class Cell(ClickableRect):
-    def __init__(self, rect: Rect):
-        self._neighbours: list[Cell] = []
+class Cell(ClickableRect, ABC):
+    def __init__(self, 
+                 rect: Rect,
+                 cells: ndarray,
+                 position: tuple[int, int]):
         self._status: self.Status = self.Status.DEAD
-        self._next_status: self.Status = self.Status.UNKNOWN
-        self._rect: Rect = rect
+        self._next_status: self.Status = self.Status.DEAD
+        self._rect = rect
+        self._cells = cells
+        self._position = position
 
+    '''
+    Possible cell states
+    '''
     class Status(Enum):
         DEAD = 0
         ALIVE = 1
-        UNKNOWN = 2
 
     @property
     def status(self):
@@ -32,10 +41,6 @@ class Cell(ClickableRect):
         return self._next_status
 
     @property
-    def neighbours(self):
-        return self._neighbours
-
-    @property
     def rect(self) -> Rect:
         return self._rect
 
@@ -47,35 +52,26 @@ class Cell(ClickableRect):
     def clickable(self) -> Rect:
         return self._rect
 
+    @abstractmethod
     def calc_next_status(self):
-        aliveNeighbours: int = 0
-        for adjacentCell in self._neighbours:
-            if adjacentCell.status == self.Status.ALIVE:
-                aliveNeighbours += 1
+        pass
 
-        self._next_status = self._status
-
-        if (self._status == self.Status.ALIVE):
-            if (aliveNeighbours < 2) or (aliveNeighbours > 3):
-                self._next_status = self.Status.DEAD
-        elif (self._status == self.Status.DEAD):
-            if aliveNeighbours == 3:
-                self._next_status = self.Status.ALIVE
-
-    def update_status(self):
+    def update(self):
+        '''
+        Updates the cells status to next_status (calculated by calc_next_status())
+        '''
         self._status = self._next_status
-        self._next_status = self.Status.UNKNOWN
-
-    def set_neighbours(self, val: list[Cell]):
-        self._neighbours = val.copy().copy()
 
     def draw(self, surface: Surface):
         border_color = Color('#404040')
         border_width = 2
 
-        color = Color('#737373')
-        if (self._status == self.Status.ALIVE):
-            color = Color('#484596')
+        match self._status:
+            case self.Status.ALIVE:
+                color = Color('#484596')
+            case _:
+                color = Color('#737373')
+
         innerRect = Rect(self._rect.x + border_width,
                          self._rect.y + border_width,
                          self._rect.w - border_width,
@@ -89,3 +85,4 @@ class Cell(ClickableRect):
             self._status = self.Status.DEAD
         elif (self._status == self.Status.DEAD):
             self._status = self.Status.ALIVE
+
