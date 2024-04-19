@@ -1,21 +1,26 @@
 import numpy as np
 
-from pygame import Rect
+from pygame import Rect, Color
 from pygame.surface import Surface
 from pygame.event import Event, custom_type
 
 from grid.cell import Cell
 from grid.cells.vanilla_cell import VanillaCell
+from grid.cells.rps_cell import RPSCell
+from grid.cells.immigration_cell import ImmigrationCell
 
 EVENT_GAME_TICK = custom_type()
 
 class Grid():
     def __init__(self, 
                  shape: tuple[int, int], 
-                 rect: Rect):
+                 rect: Rect,
+                 celltype: str):
         self._shape = shape
         self._rect = rect
         self._cells = np.empty(self._shape, dtype=Cell)
+        self._celltype = celltype
+        self._col = Color('#737373')
         self._init_cells()
 
     @property
@@ -79,7 +84,12 @@ class Grid():
         for y in range(len(self._cells)):
             for x in range(len(self._cells[0])):
                 rect = self._get_cell_rect(x, y)
-                self._cells[y][x] = VanillaCell(rect, self._cells, (x, y))
+                if self._celltype == "Vanilla Game":
+                    self._cells[y][x] = VanillaCell(rect, self._cells, (x, y))
+                elif self._celltype == "Rock Paper Scissors":
+                    self._cells[y][x] = RPSCell(rect, self._cells, (x, y))
+                elif self._celltype == "Immigration Game":
+                    self._cells[y][x] = ImmigrationCell(rect, self._cells, (x, y))
 
     def _handle_click(self, event: Event):
         if self.clickable.collidepoint(event.pos):
