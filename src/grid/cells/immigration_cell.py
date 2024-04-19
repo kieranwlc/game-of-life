@@ -63,7 +63,7 @@ class ImmigrationCell(Cell):
             case self.State.ALIVE:
                 color = self._col
             case _:
-                color = Color('#737373')
+                color = (115,115,115)
 
         innerRect = Rect(self._rect.x + border_width,
                          self._rect.y + border_width,

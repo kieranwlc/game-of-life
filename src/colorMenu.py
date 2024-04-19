@@ -32,4 +32,4 @@ def get_selected_color(mouse_pos, x, y, current):
         return current
     
 def hide_color_boxes(screen, x, y):
-    pygame.draw.rect(screen, (0,0,0), (x,y), 3 * SIZE, 3 * SIZE)
+    pygame.draw.rect(screen, (0,0,0), (x,y, 3 * SIZE, 3 * SIZE))

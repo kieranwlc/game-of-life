@@ -67,7 +67,7 @@ def toggle_options(screen):
         pygame.draw.rect(screen, (0,0,0), (display_height + 105, 55, 170, 60 * 3))
     else:
         if chosen_option == "Immigration Game":
-            hide_color_boxes(screen, display_height + 10, 120, grid._col)
+            hide_color_boxes(screen, display_height + 10, 120)
         draw_options(screen, display_height + 105, 55)
         menuShow = True
 
