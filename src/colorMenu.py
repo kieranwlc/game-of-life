@@ -22,7 +22,7 @@ def draw_color_boxes(screen, x, y):
         pygame.draw.rect(screen, color, (x + col * SIZE, y + row * SIZE, SIZE, SIZE))
 
 def get_selected_color(mouse_pos, x, y, current):
-    if mouse_pos[0] > x and mouse_pos[1] > y:
+    if mouse_pos[0] > x and mouse_pos[1] > y and mouse_pos[0] < x + 3 *40 and mouse_pos[1] < y + 2 * 40:
         col = (mouse_pos[0] - x) // SIZE
         row = (mouse_pos[1] - y) // SIZE
         index = row * 3 + col

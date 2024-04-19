@@ -3,6 +3,7 @@ import numpy as np
 from pygame import Rect
 from pygame.surface import Surface
 from pygame.event import Event, custom_type
+import csv
 
 from grid.cell import Cell
 from grid.cells.vanilla_cell import VanillaCell
@@ -105,3 +106,23 @@ class Grid():
         for cell in self._cells.flatten():
             cell.newcol(col)
 
+    def _save_grid(self, name):
+        file = []
+        if self._celltype == "Vanilla Game" or self._celltype == "Rock Paper Scissors":
+            for cell in self._cells.flatten():
+                file.append(str(cell.state.value))
+        if self._celltype == "Immigration Game":
+            for cell in self._cells.flatten():
+                file.append([str(cell.state.value), str(cell._col)])
+        with open(name+".csv", 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerows(file)
+        
+    def _load_grid(self, name):
+        with open(name+".csv", newline='') as txtfile:
+            reader = csv.reader(txtfile, delimiter=',')
+            k = 0
+            if self._celltype == "Vanilla Game" or self._celltype == "Rock Paper Scissors":
+                for row in reader:
+                    self._cells.flatten()[k]._state = row
+                    k += 1

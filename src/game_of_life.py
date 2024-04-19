@@ -65,6 +65,8 @@ def toggle_options(screen):
     if menuShow:
         menuShow = False
         pygame.draw.rect(screen, (0,0,0), (display_height + 105, 55, 170, 60 * 3))
+        if chosen_option == "Immigration Game":
+            draw_color_boxes(screen, display_height + 10, 120)
     else:
         if chosen_option == "Immigration Game":
             hide_color_boxes(screen, display_height + 10, 120)
@@ -84,7 +86,10 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
+                grid._save_grid("test")
                 running = False
+            if event.key == pygame.K_SPACE:
+                grid._load_grid("test")
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == play_button:
                 toggle_play()
