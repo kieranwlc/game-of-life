@@ -36,10 +36,15 @@ class ImmigrationCell(Cell):
                     if _coords_within_range(self._cells, (nx, ny)):
                         neighbours.append(self._cells[ny][nx])
 
+
+        tempcol = [0,0,0]
         alive_neighbours = 0
         for cell in neighbours:
             if cell.state == self.State.ALIVE:
                 alive_neighbours += 1
+                if self._state == self.State.DEAD:
+                    for i in range(3):
+                        tempcol[i] += cell._col[i]
 
         if (self._state == self.State.ALIVE):
             if (alive_neighbours < 2) or (alive_neighbours > 3):
@@ -47,6 +52,7 @@ class ImmigrationCell(Cell):
         elif (self._state == self.State.DEAD):
             if alive_neighbours == 3:
                 self._next_state = self.State.ALIVE
+                self._col = (int(tempcol[0]/3), int(tempcol[1]/3), int(tempcol[2]/3))
 
     def update(self):
         '''
