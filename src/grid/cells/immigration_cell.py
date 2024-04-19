@@ -13,6 +13,8 @@ class ImmigrationCell(Cell):
         super(ImmigrationCell, self).__init__(*args, **kwargs)
         self._state: self.State = self.State.DEAD
         self._next_state: self.State = self.State.DEAD
+        self._col = (0,0,0)
+        self._newcol = (0,0,0)
 
     class State(Enum):
         DEAD = 0
@@ -55,10 +57,11 @@ class ImmigrationCell(Cell):
     def draw(self, surface: Surface):
         border_color = Color('#404040')
         border_width = 2
+        #print(self._col)
 
         match self._state:
             case self.State.ALIVE:
-                color = Color('#484596')
+                color = self._col
             case _:
                 color = Color('#737373')
 
@@ -75,4 +78,8 @@ class ImmigrationCell(Cell):
             self._state = self.State.DEAD
         elif (self._state == self.State.DEAD):
             self._state = self.State.ALIVE
+            self._col = self._newcol
+
+    def newcol(self, col):
+        self._newcol = col
 

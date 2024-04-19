@@ -1,6 +1,6 @@
 import numpy as np
 
-from pygame import Rect, Color
+from pygame import Rect
 from pygame.surface import Surface
 from pygame.event import Event, custom_type
 
@@ -20,7 +20,6 @@ class Grid():
         self._rect = rect
         self._cells = np.empty(self._shape, dtype=Cell)
         self._celltype = celltype
-        self._col = Color('#737373')
         self._init_cells()
 
     @property
@@ -101,4 +100,8 @@ class Grid():
         cell_w = self._rect.w / self._shape[0] 
         cell_h = self._rect.h / self._shape[1] 
         return Rect(x * cell_w, y * cell_h, cell_w, cell_h)
+    
+    def _update_cell_color(self, col):
+        for cell in self._cells.flatten():
+            cell.newcol(col)
 

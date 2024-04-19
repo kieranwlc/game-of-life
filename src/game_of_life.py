@@ -6,12 +6,14 @@ from pygame_gui.elements import UIButton
 
 from grid.grid import Grid, EVENT_GAME_TICK
 from settings import settings
+from colorMenu import draw_color_boxes, get_selected_color, hide_color_boxes
 
 # Markup display into Rects
 display_width = settings.settings_read("display_width")
 display_height = settings.settings_read("display_height")
 
 chosen_option = "Vanilla Game"
+col = (0,0,0)
 
 pygame.init()
 pygame.display.set_caption("Game of Life")
@@ -64,6 +66,8 @@ def toggle_options(screen):
         menuShow = False
         pygame.draw.rect(screen, (0,0,0), (display_height + 105, 55, 170, 60 * 3))
     else:
+        if chosen_option == "Immigration Game":
+            hide_color_boxes(screen, display_height + 10, 120, grid._col)
         draw_options(screen, display_height + 105, 55)
         menuShow = True
 
@@ -78,21 +82,29 @@ while running:
 
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == play_button:
                 toggle_play()
             if event.ui_element == option_button:
                 toggle_options(screen)
         if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button
-                    mouse_x, mouse_y = event.pos
-                    if menuShow:
-                        for i, option in enumerate(options):
-                            option_rect = pygame.Rect(display_height + 105, 55 + i * 60, 170, 50)
-                            if option_rect.collidepoint(mouse_x, mouse_y):
-                                chosen_option = option
-                                grid = Grid((50, 50), Rect(0, 0, display_height, display_height), chosen_option)
-                                toggle_options(screen)
+            if event.button == 1:  # Left mouse button
+                mouse_x, mouse_y = event.pos
+                if menuShow:
+                    for i, option in enumerate(options):
+                        option_rect = pygame.Rect(display_height + 105, 55 + i * 60, 170, 50)
+                        if option_rect.collidepoint(mouse_x, mouse_y):
+                            chosen_option = option
+                            grid: Grid = Grid((50, 50), Rect(0, 0, display_height, display_height), chosen_option)
+                            toggle_options(screen)
+                            if chosen_option == "Immigration Game":
+                                draw_color_boxes(screen, display_height + 10, 120)
+                if chosen_option == "Immigration Game":
+                    col = get_selected_color(event.pos, display_height + 10, 120, col)
+                    grid._update_cell_color(col)
 
     grid.draw(screen)
     gui_manager.update(time_delta)
