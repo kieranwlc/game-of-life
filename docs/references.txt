@@ -1,0 +1,6 @@
+https://cs.stanford.edu/people/eroberts/courses/soco/projects/2008-09/modeling-natural-systems/gameOfLife2.html
+https://people.kth.se/~gunnarj/LIFE/WLIF/wlcframes.html
+http://www.mirekw.com/ca/whatis_life.html
+http://www.mirekw.com/ca/rullex_gene.html
+http://www.mirekw.com/ca/rullex_1dto.html
+http://www.mirekw.com/ca/index.html

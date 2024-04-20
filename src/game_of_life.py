@@ -8,6 +8,9 @@ from grid.grid import Grid, EVENT_GAME_TICK
 from settings import settings
 from colorMenu import draw_color_boxes, get_selected_color, hide_color_boxes
 
+from tkinter import Tk, filedialog, simpledialog
+import os
+
 # Markup display into Rects
 display_width = settings.settings_read("display_width")
 display_height = settings.settings_read("display_height")
@@ -22,6 +25,8 @@ screen = pygame.display.set_mode((display_width, display_height))
 gui_manager = pygame_gui.UIManager((display_width, display_height))
 
 grid: Grid = Grid((50, 50), Rect(0, 0, display_height, display_height), chosen_option)
+
+#grid._load_grid("C:/Users/danje/Documents/Uni/Module Notes/COMP5400 Bioinspired Computing/coursework2/game-of-life/test.csv")
     
 playing = False
 play_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 0), (100, 50)),
@@ -66,12 +71,34 @@ def toggle_options(screen):
         menuShow = False
         pygame.draw.rect(screen, (0,0,0), (display_height + 105, 55, 170, 60 * 3))
         if chosen_option == "Immigration Game":
-            draw_color_boxes(screen, display_height + 10, 120)
+            draw_color_boxes(screen, display_height + 10, 230)
     else:
         if chosen_option == "Immigration Game":
             hide_color_boxes(screen, display_height + 10, 120)
         draw_options(screen, display_height + 105, 55)
         menuShow = True
+
+save_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 110), (100, 50)),
+                                           text='Save',
+                                           manager=gui_manager)
+
+load_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 165), (100, 50)),
+                                           text='Load',
+                                           manager=gui_manager)
+
+def open_file_dialog():
+    root = Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename()
+    root.destroy()
+    grid._load_grid(file_path)
+
+def get_text_input():
+    root = Tk()
+    root.withdraw()
+    user_input = simpledialog.askstring("File Name", "Enter text:")
+    root.destroy()
+    grid._save_grid(user_input)
 
 clock = pygame.time.Clock()
 running = True
@@ -86,15 +113,18 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                grid._save_grid("test")
                 running = False
             if event.key == pygame.K_SPACE:
-                grid._load_grid("test")
+                get_text_input()
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == play_button:
                 toggle_play()
             if event.ui_element == option_button:
                 toggle_options(screen)
+            if event.ui_element == save_button:
+                get_text_input()
+            if event.ui_element == load_button:
+                open_file_dialog()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left mouse button
                 mouse_x, mouse_y = event.pos
@@ -106,9 +136,9 @@ while running:
                             grid: Grid = Grid((50, 50), Rect(0, 0, display_height, display_height), chosen_option)
                             toggle_options(screen)
                             if chosen_option == "Immigration Game":
-                                draw_color_boxes(screen, display_height + 10, 120)
+                                draw_color_boxes(screen, display_height + 10, 230)
                 if chosen_option == "Immigration Game":
-                    col = get_selected_color(event.pos, display_height + 10, 120, col)
+                    col = get_selected_color(event.pos, display_height + 10, 230, col)
                     grid._update_cell_color(col)
 
     grid.draw(screen)

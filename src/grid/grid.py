@@ -113,16 +113,26 @@ class Grid():
                 file.append(str(cell.state.value))
         if self._celltype == "Immigration Game":
             for cell in self._cells.flatten():
-                file.append([str(cell.state.value), str(cell._col)])
-        with open(name+".csv", 'w', newline='') as csvfile:
+                file.append([str(cell.state.value), str(cell._col[0]), str(cell._col[1]), str(cell._col[2])])
+        with open("src/presets/"+name+".csv", 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerows(file)
         
-    def _load_grid(self, name):
-        with open(name+".csv", newline='') as txtfile:
+    def _load_grid(self, file_path):
+        with open(file_path, newline='') as txtfile:
             reader = csv.reader(txtfile, delimiter=',')
             k = 0
-            if self._celltype == "Vanilla Game" or self._celltype == "Rock Paper Scissors":
+            if self._celltype == "Vanilla Game":
                 for row in reader:
-                    self._cells.flatten()[k]._state = row
+                    self._cells.flatten()[k]._state = VanillaCell.State(int(row[0]))
+                    k += 1
+            elif self._celltype == "Rock Paper Scissors":
+                for row in reader:
+                    self._cells.flatten()[k]._state = RPSCell.State(int(row[0]))
+                    k += 1
+            elif self._celltype == "Immigration Game":
+                for row in reader:
+                    self._cells.flatten()[k]._state = ImmigrationCell.State(int(row[0]))
+                    #print((int(row[1]), int(row[2]), int(row[3])))
+                    self._cells.flatten()[k]._col = (int(row[1]),int(row[2]),int(row[3]))
                     k += 1
