@@ -3,8 +3,8 @@ import os
 settings_path = os.path.dirname(os.path.abspath(__file__)) + '/../settings.json'
 
 settings = {
-    "display_height": 900,
-    "display_width": 1600,
+    "display_height": 600,
+    "display_width": 1200,
 }
 
 def save_settings():

@@ -6,6 +6,7 @@ from pygame.event import Event, custom_type
 
 from grid.cell import Cell
 from grid.cells.vanilla_cell import VanillaCell
+from grid.cells.shell_cell import ShellCell
 
 EVENT_GAME_TICK = custom_type()
 
@@ -79,7 +80,7 @@ class Grid():
         for y in range(len(self._cells)):
             for x in range(len(self._cells[0])):
                 rect = self._get_cell_rect(x, y)
-                self._cells[y][x] = VanillaCell(rect, self._cells, (x, y))
+                self._cells[y][x] = ShellCell(rect, self._cells, (x, y))
 
     def _handle_click(self, event: Event):
         if self.clickable.collidepoint(event.pos):
