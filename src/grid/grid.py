@@ -3,20 +3,24 @@ import numpy as np
 from pygame import Rect
 from pygame.surface import Surface
 from pygame.event import Event, custom_type
+import csv
 
 from grid.cell import Cell
 from grid.cells.vanilla_cell import VanillaCell
-from grid.cells.shell_cell import ShellCell
+from grid.cells.rps_cell import RPSCell
+from grid.cells.immigration_cell import ImmigrationCell
 
 EVENT_GAME_TICK = custom_type()
 
 class Grid():
     def __init__(self, 
                  shape: tuple[int, int], 
-                 rect: Rect):
+                 rect: Rect,
+                 celltype: str):
         self._shape = shape
         self._rect = rect
         self._cells = np.empty(self._shape, dtype=Cell)
+        self._celltype = celltype
         self._init_cells()
 
     @property
@@ -76,11 +80,46 @@ class Grid():
                 self._cells[y][x].rect = self._get_cell_rect(x, y)
                 self._cells[y][x].draw(surface)
 
+    def save_grid(self, name):
+        file = []
+        if self._celltype == "Vanilla Game" or self._celltype == "Rock Paper Scissors":
+            for cell in self._cells.flatten():
+                file.append(str(cell.state.value))
+        if self._celltype == "Immigration Game":
+            for cell in self._cells.flatten():
+                file.append([str(cell.state.value), str(cell._col[0]), str(cell._col[1]), str(cell._col[2])])
+        with open("src/presets/"+name+".csv", 'w+', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerows(file)
+        
+    def load_grid(self, file_path):
+        with open(file_path, newline='') as txtfile:
+            reader = csv.reader(txtfile, delimiter=',')
+            k = 0
+            if self._celltype == "Vanilla Game":
+                for row in reader:
+                    self._cells.flatten()[k]._state = VanillaCell.State(int(row[0]))
+                    k += 1
+            elif self._celltype == "Rock Paper Scissors":
+                for row in reader:
+                    self._cells.flatten()[k]._state = RPSCell.State(int(row[0]))
+                    k += 1
+            elif self._celltype == "Immigration Game":
+                for row in reader:
+                    self._cells.flatten()[k]._state = ImmigrationCell.State(int(row[0]))
+                    self._cells.flatten()[k]._col = (int(row[1]),int(row[2]),int(row[3]))
+                    k += 1
+
     def _init_cells(self):
         for y in range(len(self._cells)):
             for x in range(len(self._cells[0])):
                 rect = self._get_cell_rect(x, y)
-                self._cells[y][x] = ShellCell(rect, self._cells, (x, y))
+                if self._celltype == "Vanilla Game":
+                    self._cells[y][x] = VanillaCell(rect, self._cells, (x, y))
+                elif self._celltype == "Rock Paper Scissors":
+                    self._cells[y][x] = RPSCell(rect, self._cells, (x, y))
+                elif self._celltype == "Immigration Game":
+                    self._cells[y][x] = ImmigrationCell(rect, self._cells, (x, y))
 
     def _handle_click(self, event: Event):
         if self.clickable.collidepoint(event.pos):
@@ -92,4 +131,8 @@ class Grid():
         cell_w = self._rect.w / self._shape[0] 
         cell_h = self._rect.h / self._shape[1] 
         return Rect(x * cell_w, y * cell_h, cell_w, cell_h)
+    
+    def _update_cell_color(self, col):
+        for cell in self._cells.flatten():
+            cell.newcol(col)
 
