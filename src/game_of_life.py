@@ -91,14 +91,16 @@ def open_file_dialog():
     root.withdraw()
     file_path = filedialog.askopenfilename()
     root.destroy()
-    grid._load_grid(file_path)
+    if (file_path):
+        grid.load_grid(file_path)
 
 def get_text_input():
     root = Tk()
     root.withdraw()
     user_input = simpledialog.askstring("File Name", "Enter text:")
     root.destroy()
-    grid._save_grid(user_input)
+    if (user_input):
+        grid.save_grid(user_input)
 
 clock = pygame.time.Clock()
 running = True
