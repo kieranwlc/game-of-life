@@ -87,11 +87,11 @@ load_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_he
                                            text='Load',
                                            manager=gui_manager)
 
-next_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 220), (100, 50)),
-                                           text='Save',
+next_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height + 200, display_height - 50), (100, 50)),
+                                           text='Next',
                                            manager=gui_manager)
 
-speed_slider = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((display_height, 275), (300, 50)),
+speed_slider = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((display_height, display_height - 50), (200, 50)),
                                                       value_range=(1, 6),
                                                       start_value=1,
                                                       click_increment=1)
