@@ -9,6 +9,8 @@ from grid.cell import Cell
 from grid.cells.vanilla_cell import VanillaCell
 from grid.cells.rps_cell import RPSCell
 from grid.cells.immigration_cell import ImmigrationCell
+from grid.cells.shell_cell import ShellCell
+from grid.cells.brians_brain_cell import BriansBrainCell
 
 EVENT_GAME_TICK = custom_type()
 
@@ -82,7 +84,7 @@ class Grid():
 
     def save_grid(self, name):
         file = []
-        if self._celltype == "Vanilla Game" or self._celltype == "Rock Paper Scissors":
+        if self._celltype == "Vanilla Game" or self._celltype == "Rock Paper Scissors" or self._celltype == "Shell Pattern" or self._celltype =="Brians Brain":
             for cell in self._cells.flatten():
                 file.append(str(cell.state.value))
         if self._celltype == "Immigration Game":
@@ -104,6 +106,14 @@ class Grid():
                 for row in reader:
                     self._cells.flatten()[k]._state = RPSCell.State(int(row[0]))
                     k += 1
+            elif self._celltype == "Shell Pattern":
+                for row in reader:
+                    self._cells.flatten()[k]._state = ShellCell.State(int(row[0]))
+                    k += 1
+            elif self._celltype == "Brians Brain":
+                for row in reader:
+                    self._cells.flatten()[k]._state = BriansBrainCell.State(int(row[0]))
+                    k += 1
             elif self._celltype == "Immigration Game":
                 for row in reader:
                     self._cells.flatten()[k]._state = ImmigrationCell.State(int(row[0]))
@@ -118,6 +128,10 @@ class Grid():
                     self._cells[y][x] = VanillaCell(rect, self._cells, (x, y))
                 elif self._celltype == "Rock Paper Scissors":
                     self._cells[y][x] = RPSCell(rect, self._cells, (x, y))
+                elif self._celltype == "Shell Pattern":
+                    self._cells[y][x] = ShellCell(rect, self._cells, (x, y))
+                elif self._celltype == "Brians Brain":
+                    self._cells[y][x] = BriansBrainCell(rect, self._cells, (x, y))
                 elif self._celltype == "Immigration Game":
                     self._cells[y][x] = ImmigrationCell(rect, self._cells, (x, y))
 
