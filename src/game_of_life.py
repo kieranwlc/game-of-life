@@ -46,7 +46,8 @@ def toggle_play():
         time.set_timer(EVENT_GAME_TICK, millis=0)
         playing = False 
 
-options = ["Vanilla Game", "Rock Paper Scissors", "Immigration Game"]
+options = ["Vanilla Game", "Rock Paper Scissors", "Immigration Game", "Shell Pattern"]
+
 menuShow = False
 option_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 55), (100, 50)),
                                            text='Options',
@@ -69,7 +70,7 @@ def toggle_options(screen):
     global menuShow
     if menuShow:
         menuShow = False
-        pygame.draw.rect(screen, (0,0,0), (display_height + 105, 55, 170, 60 * 3))
+        pygame.draw.rect(screen, (0,0,0), (display_height + 105, 55, 170, 60 * len(options)))
         if chosen_option == "Immigration Game":
             draw_color_boxes(screen, display_height + 10, 230)
     else:
