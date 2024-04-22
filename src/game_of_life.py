@@ -97,20 +97,8 @@ speed_slider = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((display_heigh
                                                       click_increment=1)
 
 def get_tick_delay_ms():
-    speed_discreet = round(7 - speed_slider.current_value)
-    match speed_discreet:
-        case 6:
-            return 1280
-        case 5:
-            return 640
-        case 4:
-            return 320
-        case 3:
-            return 160
-        case 2:
-            return 80
-        case 1:
-            return 40
+    speed_discreet = round(6 - speed_slider.current_value)
+    return 40 * pow(2, speed_discreet)
 
 def update_speed():
     if playing:
