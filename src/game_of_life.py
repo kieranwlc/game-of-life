@@ -46,7 +46,7 @@ def toggle_play():
         time.set_timer(EVENT_GAME_TICK, millis=0)
         playing = False 
 
-options = ["Vanilla Game", "Rock Paper Scissors", "Immigration Game", "Shell Pattern"]
+options = ["Vanilla Game", "Rock Paper Scissors", "Immigration Game", "Shell Pattern", "Brians Brain"]
 
 menuShow = False
 option_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 55), (100, 50)),
