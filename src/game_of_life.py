@@ -3,14 +3,12 @@ import pygame
 from pygame import Rect, time
 
 import pygame_gui
-from pygame_gui.elements import UIButton
 
 from grid.grid import Grid, EVENT_GAME_TICK
 from settings import settings
 from colorMenu import draw_color_boxes, get_selected_color, hide_color_boxes
 
-from tkinter import Tk, filedialog, simpledialog
-import os
+from tkinter import Tk, filedialog
 
 # Markup display into Rects
 display_width = settings.settings_read("display_width")
@@ -87,26 +85,34 @@ load_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_he
                                            text='Load',
                                            manager=gui_manager)
 
+next_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height + 200, display_height - 50), (100, 50)),
+                                           text='Next',
+                                           manager=gui_manager)
+
 def force_next_tick():
     event = pygame.Event(EVENT_GAME_TICK)
     pygame.event.post(event)
 
-next_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height + 200, display_height - 50), (100, 50)),
-                                           text='Next',
+clear_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height + 105, 0), (100, 50)),
+                                           text='Clear',
                                            manager=gui_manager)
+
+def clear_grid():
+    global grid
+    grid = Grid((50, 50), Rect(0, 0, display_height, display_height), chosen_option)
 
 speed_slider = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((display_height, display_height - 50), (200, 50)),
                                                       value_range=(1, 6),
                                                       start_value=1,
                                                       click_increment=1)
 
-def get_tick_delay_ms():
-    speed_discreet = round(6 - speed_slider.current_value)
-    return 40 * pow(2, speed_discreet)
-
 def update_speed():
     if playing:
         time.set_timer(EVENT_GAME_TICK, millis=get_tick_delay_ms(), loops=0)
+
+def get_tick_delay_ms():
+    speed_discreet = round(6 - speed_slider.current_value)
+    return 40 * pow(2, speed_discreet)
 
 def load_grid_dialog():
     global grid
@@ -157,6 +163,8 @@ while running:
                 save_grid_dialog()
             if event.ui_element == load_button:
                 load_grid_dialog()
+            if event.ui_element == clear_button:
+                clear_grid()
             if event.ui_element == next_button:
                 force_next_tick()
 
