@@ -1,3 +1,4 @@
+import pickle
 import pygame
 from pygame import Rect, time
 
@@ -24,9 +25,8 @@ pygame.display.set_caption("Game of Life")
 screen = pygame.display.set_mode((display_width, display_height))
 gui_manager = pygame_gui.UIManager((display_width, display_height))
 
+global grid
 grid: Grid = Grid((50, 50), Rect(0, 0, display_height, display_height), chosen_option)
-
-#grid._load_grid("C:/Users/danje/Documents/Uni/Module Notes/COMP5400 Bioinspired Computing/coursework2/game-of-life/test.csv")
     
 playing = False
 play_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 0), (100, 50)),
@@ -108,22 +108,28 @@ def update_speed():
     if playing:
         time.set_timer(EVENT_GAME_TICK, millis=get_tick_delay_ms(), loops=0)
 
-def open_file_dialog():
+def load_grid_dialog():
+    global grid
+
     root = Tk()
     root.withdraw()
     file_path = filedialog.askopenfilename()
     root.destroy()
     if (file_path):
-        grid.load_grid(file_path)
+        with open(file_path, "rb") as infile:
+            infile.seek(0)
+            grid = pickle.load(infile)
 
-def get_text_input():
+def save_grid_dialog():
+    global grid
+
     root = Tk()
     root.withdraw()
-    # user_input = simpledialog.askstring("File Name", "Enter text:")
     user_input = filedialog.asksaveasfilename()
     root.destroy()
     if (user_input):
-        grid.save_grid(user_input)
+        with open(user_input, "wb") as outfile:
+            pickle.dump(grid, outfile)
 
 clock = pygame.time.Clock()
 running = True
@@ -141,16 +147,16 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
             if event.key == pygame.K_SPACE:
-                get_text_input()
+                save_grid_dialog()
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == play_button:
                 toggle_play()
             if event.ui_element == option_button:
                 toggle_options(screen)
             if event.ui_element == save_button:
-                get_text_input()
+                save_grid_dialog()
             if event.ui_element == load_button:
-                open_file_dialog()
+                load_grid_dialog()
             if event.ui_element == next_button:
                 force_next_tick()
 
@@ -166,7 +172,7 @@ while running:
                         option_rect = pygame.Rect(display_height + 105, 55 + i * 60, 170, 50)
                         if option_rect.collidepoint(mouse_x, mouse_y):
                             chosen_option = option
-                            grid: Grid = Grid((50, 50), Rect(0, 0, display_height, display_height), chosen_option)
+                            grid = Grid((50, 50), Rect(0, 0, display_height, display_height), chosen_option)
                             toggle_options(screen)
                             if chosen_option == "Immigration Game":
                                 draw_color_boxes(screen, display_height + 10, 230)
