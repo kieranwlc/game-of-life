@@ -38,7 +38,7 @@ def toggle_play():
     if not playing:
         play_button.text = 'Pause'
         play_button.rebuild()
-        time.set_timer(EVENT_GAME_TICK, millis=100, loops=0)
+        time.set_timer(EVENT_GAME_TICK, millis=get_tick_delay_ms(), loops=0)
         playing = True
     else:
         play_button.text = 'Play'
@@ -87,6 +87,35 @@ load_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_he
                                            text='Load',
                                            manager=gui_manager)
 
+next_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 220), (100, 50)),
+                                           text='Save',
+                                           manager=gui_manager)
+
+speed_slider = pygame_gui.elements.UIHorizontalSlider(pygame.Rect((display_height, 275), (300, 50)),
+                                                      value_range=(1, 6),
+                                                      start_value=1,
+                                                      click_increment=1)
+
+def get_tick_delay_ms():
+    speed_discreet = round(7 - speed_slider.current_value)
+    match speed_discreet:
+        case 6:
+            return 1280
+        case 5:
+            return 640
+        case 4:
+            return 320
+        case 3:
+            return 160
+        case 2:
+            return 80
+        case 1:
+            return 40
+
+def update_speed():
+    if playing:
+        time.set_timer(EVENT_GAME_TICK, millis=get_tick_delay_ms(), loops=0)
+
 def open_file_dialog():
     root = Tk()
     root.withdraw()
@@ -108,6 +137,7 @@ running = True
 
 while running:
     time_delta = clock.tick(60)/1000.0
+
     for event in pygame.event.get():
         gui_manager.process_events(event)
         grid.process_event(event)
@@ -128,6 +158,10 @@ while running:
                 get_text_input()
             if event.ui_element == load_button:
                 open_file_dialog()
+        if event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
+            if event.ui_element == speed_slider:
+                update_speed();
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left mouse button
                 mouse_x, mouse_y = event.pos
