@@ -90,7 +90,7 @@ class Grid():
         if self._celltype == "Immigration Game":
             for cell in self._cells.flatten():
                 file.append([str(cell.state.value), str(cell._col[0]), str(cell._col[1]), str(cell._col[2])])
-        with open("src/presets/"+name+".csv", 'w+', newline='') as csvfile:
+        with open(name, 'w+', newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerows(file)
         

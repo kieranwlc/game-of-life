@@ -127,7 +127,8 @@ def open_file_dialog():
 def get_text_input():
     root = Tk()
     root.withdraw()
-    user_input = simpledialog.askstring("File Name", "Enter text:")
+    # user_input = simpledialog.askstring("File Name", "Enter text:")
+    user_input = filedialog.asksaveasfilename()
     root.destroy()
     if (user_input):
         grid.save_grid(user_input)
