@@ -44,8 +44,6 @@ def toggle_play():
         time.set_timer(EVENT_GAME_TICK, millis=0)
         playing = False 
 
-options = ["Vanilla Game", "Rock Paper Scissors", "Immigration Game", "Shell Pattern", "Brians Brain"]
-
 menuShow = False
 option_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height, 55), (100, 50)),
                                            text='Options',
@@ -57,7 +55,7 @@ def create_text_surface(text, font_size, color):
 
 def draw_options(screen, x, y):
     option_y = y
-    for option in options:
+    for option in Grid.OPTIONS:
         pygame.draw.rect(screen, (100, 100, 100), (x, option_y, 170, 50))
         text_surface = create_text_surface(option, 24, (255,255,255))
         text_rect = text_surface.get_rect(center=(x + 170 / 2, option_y + 50 / 2))
@@ -68,12 +66,12 @@ def toggle_options(screen):
     global menuShow
     if menuShow:
         menuShow = False
-        pygame.draw.rect(screen, (0,0,0), (display_height + 105, 55, 170, 60 * len(options)))
+        pygame.draw.rect(screen, (0,0,0), (display_height + 105, 55, 170, 60 * len(Grid.OPTIONS)))
         if chosen_option == "Immigration Game":
             draw_color_boxes(screen, display_height + 10, 230)
     else:
         if chosen_option == "Immigration Game":
-            hide_color_boxes(screen, display_height + 10, 120)
+            hide_color_boxes(screen, display_height + 10, 230)
         draw_options(screen, display_height + 105, 55)
         menuShow = True
 
@@ -176,7 +174,7 @@ while running:
             if event.button == 1:  # Left mouse button
                 mouse_x, mouse_y = event.pos
                 if menuShow:
-                    for i, option in enumerate(options):
+                    for i, option in enumerate(Grid.OPTIONS):
                         option_rect = pygame.Rect(display_height + 105, 55 + i * 60, 170, 50)
                         if option_rect.collidepoint(mouse_x, mouse_y):
                             chosen_option = option

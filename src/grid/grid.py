@@ -25,6 +25,12 @@ class Grid():
         self._celltype = celltype
         self._init_cells()
 
+    OPTIONS = ["Vanilla Game", 
+               "Rock Paper Scissors", 
+               "Immigration Game", 
+               "Shell Pattern", 
+               "Brians Brain"]
+
     @property
     def shape(self) -> tuple[int, int]:
         return self._shape
