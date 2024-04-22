@@ -87,6 +87,10 @@ load_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_he
                                            text='Load',
                                            manager=gui_manager)
 
+def force_next_tick():
+    event = pygame.Event(EVENT_GAME_TICK)
+    pygame.event.post(event)
+
 next_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((display_height + 200, display_height - 50), (100, 50)),
                                            text='Next',
                                            manager=gui_manager)
@@ -147,6 +151,9 @@ while running:
                 get_text_input()
             if event.ui_element == load_button:
                 open_file_dialog()
+            if event.ui_element == next_button:
+                force_next_tick()
+
         if event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
             if event.ui_element == speed_slider:
                 update_speed();
