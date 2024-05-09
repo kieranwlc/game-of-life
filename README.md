@@ -1,4 +1,4 @@
-# Game of Life
+# [Game of Life](https://github.com/kieranwlc/game-of-life)
 This is an interactive sandbox which contains an implementation of Conway's Game of Life
 and several other Cellular Automata. 
 
