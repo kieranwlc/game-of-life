@@ -61,3 +61,5 @@ Cells can be set to specific colors which interact with one another to form new 
 Cells propagate by following rules similar to those which determine crustacean shell patterns
 #### Brian's Brain
 Brian's Brain, another popular type of cellular automata which produces a lot of gliders.
+#### Prisoner's Dilemma
+A game in which cells play the Prisoners Dilemma and must decide between altruistic and greedy strategies.
