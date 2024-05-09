@@ -57,9 +57,9 @@ class ShellCell(Cell):
 
         match self._state:
             case self.State.ALIVE:
-                color = Color('#484596')
+                color = Color('#A65107')
             case _:
-                color = Color('#737373')
+                color = Color('#FAEADC')
 
         innerRect = Rect(self._rect.x + border_width,
                          self._rect.y + border_width,
