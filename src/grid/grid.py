@@ -11,6 +11,7 @@ from grid.cells.rps_cell import RPSCell
 from grid.cells.immigration_cell import ImmigrationCell
 from grid.cells.shell_cell import ShellCell
 from grid.cells.brians_brain_cell import BriansBrainCell
+from grid.cells.iter_prisoner_cell import IPDCell
 
 EVENT_GAME_TICK = custom_type()
 
@@ -29,7 +30,8 @@ class Grid():
                "Rock Paper Scissors", 
                "Immigration Game", 
                "Shell Pattern", 
-               "Brians Brain"]
+               "Brians Brain",
+               "Prisoner's Dilemma"]
 
     @property
     def shape(self) -> tuple[int, int]:
@@ -102,6 +104,8 @@ class Grid():
                     self._cells[y][x] = BriansBrainCell(rect, self._cells, (x, y))
                 elif self._celltype == "Immigration Game":
                     self._cells[y][x] = ImmigrationCell(rect, self._cells, (x, y))
+                elif self._celltype == "Prisoner's Dilemma":
+                    self._cells[y][x] = IPDCell(rect, self._cells, (x, y))
 
     def _handle_click(self, event: Event):
         if self.clickable.collidepoint(event.pos):
